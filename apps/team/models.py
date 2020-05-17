@@ -1,36 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
-class Student(models.Model):
-    SOF18 = 'SOF18'
-    LAT18 = 'LAT18'
-    TEL18 = 'TEL18'
-    INF18 = 'INF18'
-    INC18 = 'INC18'
-    PLAN_CHOICES = [
-        (SOF18,'SOF18'),
-        (LAT18,'LAT18'),
-        (TEL18,'TEL18'),
-        (INF18,'INF18'),
-        (INC18,'INC18'),
-    ]
-
-    PRIMERO = 1
-    SEGUNDO = 2
-    TERCERO = 3
-    SEMESTER_CHOICES=[
-        (PRIMERO,'Primero'),
-        (SEGUNDO,'Segundo'),
-        (TERCERO,'Tercero'),
-    ]
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=150)
-    group = models.IntegerField()
-    semester = models.IntegerField(choices=SEMESTER_CHOICES, default=PRIMERO)
-    plan = models.CharField(max_length=5, choices=PLAN_CHOICES, default= 'SOF18')
-    liberado = models.BooleanField(default=False, blank = True)
-    date_enrollment = models.DateTimeField(auto_now_add=True, blank=True)
-
 class Team(models.Model):
     ATLETISMO='Atletismo'
     BASKETBALL='Basketball'
@@ -72,4 +42,34 @@ class Team(models.Model):
     schedule = models.CharField(max_length=25)
     place = models.CharField(max_length=25, choices= PLACES_CHOICES, default=CANCHA_PASTO)
 
+class Student(models.Model):
+    SOF18 = 'SOF18'
+    LAT18 = 'LAT18'
+    TEL18 = 'TEL18'
+    INF18 = 'INF18'
+    INC18 = 'INC18'
+    PLAN_CHOICES = [
+        (SOF18,'SOF18'),
+        (LAT18,'LAT18'),
+        (TEL18,'TEL18'),
+        (INF18,'INF18'),
+        (INC18,'INC18'),
+    ]
 
+    PRIMERO = 1
+    SEGUNDO = 2
+    TERCERO = 3
+    SEMESTER_CHOICES=[
+        (PRIMERO,'Primero'),
+        (SEGUNDO,'Segundo'),
+        (TERCERO,'Tercero'),
+    ]
+    idTeam=models.ForeignKey('Team', on_delete=models.CASCADE, related_name='get_members')
+    expediente=models.IntegerField()
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=150)
+    group = models.IntegerField()
+    semester = models.IntegerField(choices=SEMESTER_CHOICES, default=PRIMERO)
+    plan = models.CharField(max_length=5, choices=PLAN_CHOICES, default= 'SOF18')
+    liberado = models.BooleanField(default=False, blank = True)
+    date_enrollment = models.DateTimeField(auto_now_add=True, blank=True)
