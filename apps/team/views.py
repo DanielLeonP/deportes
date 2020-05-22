@@ -13,7 +13,7 @@ def equipos(request):
 
 def estudiantes(request):
     #Todos los estudiantes
-    estudiante = Student.objects.all()
+    estudiantes = Student.objects.all()
     print("*************")
     print(estudiantes)
     print("*************")
@@ -21,15 +21,15 @@ def estudiantes(request):
 
 def estudiantes_plan(request, plan):
     #Todos los estudiantes por plan
-    estudiante = Student.objects.filter(plan = plan)
+    estudiantes = Student.objects.filter(plan = plan)
     print("*************")
     print(estudiantes)
     print("*************")
     return HttpResponse(estudiantes)
 
-def estudiantes_equipo(request, id_equipo):
+def estudiantes_equipo(request, idTeam):
     #Todos los estudiantes por plan
-    estudiante = Student.objects.filter(Team_id = id_equipo)
+    estudiantes = Student.objects.filter(idTeam = idTeam)
     print("*************")
     print(estudiantes)
     print("*************")
