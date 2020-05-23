@@ -1,8 +1,28 @@
-{% extends 'base.html' %}
-{% block title %}
-Home
-{% endblock %}
-
-{% block content %}
-<h1>Bienvenido</h1>
-    {% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {{ request.user }}
+    <a href="{% url 'login' %}">Login</a>
+    <table>
+        <h1>Bienvenido</h1>
+        <p>Consulta los talleres deportivos</p>
+        <tr>
+            <th>Deporte</th>
+            <th>Horario</th>
+            <th>Docente</th>
+        </tr>
+        {% for team in teams %}
+       <tr>
+           <td> {{ team.sport }}</td>
+           <td> {{ team.schedule }}</td>
+           <td> {{ team.teacher.get_full_name }}</td>
+       </tr>
+        {% endfor%}
+    </table>
+</body>
+</html>
