@@ -10,6 +10,10 @@ from django.contrib.auth import logout
 def home_view(request):
     teams = Team.objects.all()
     return render(request, 'home.html', {'teams':teams})
+def panel_view(request):
+    #vista que muestra el panel de control
+    teams = Team.objects.all()
+    return render(request, 'panel.html', {'teams':teams})
 
 def login_view(request):
     if request.method == 'POST':
@@ -18,6 +22,7 @@ def login_view(request):
             login(request, user)
             return HttpResponse("Bienvenido")
         else:
+            form = AuthenticationForm
             return render(request,'login.html', {'form':form})
     else:
         form = AuthenticationForm()
