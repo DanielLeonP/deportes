@@ -4,13 +4,12 @@ from .models import Student
 class StudentForm(forms.ModelForm):
     #Formulario para registrar alumnos
 
-
     class Meta:
         model = Student
         exclude = ('liberado',)
         labels = {
-            'team':''
+            'idTeam':'' #No mostrar
         }
         widgets = {
-            'team':forms.NumberInput(attrs={'hidden':True})
+            'idTeam':forms.NumberInput(attrs={'hidden':True})
         }
