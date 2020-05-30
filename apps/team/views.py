@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
+from django.contrib import messages
 from .models import Team
 from .models import Student
-from .forms import StudentForm
+from .forms import StudentForm, TeamForm
 
 # Create your views here.
 def equipos(request):
@@ -45,11 +47,27 @@ def team_details(request, idTeam):
         if form.is_valid():
             form.save()
             return redirect('team_details', idTeam)
-        team = Team.objects.get(pk=idTeam)
+        #team = Team.objects.get(pk=idTeam)
+        team = get_object_or_404(Team, pk = idTeam)
         students = Student.objects.filter(idTeam = idTeam)
         return render(request, 'team_details.html', {'form':form, 'students':students, 'team':team})
 
-    team = Team.objects.get(pk=idTeam)
+    #team = Team.objects.get(pk=idTeam)
+    team = get_object_or_404(Team, pk = idTeam)
     students = Student.objects.filter(idTeam = idTeam)
     form = StudentForm(initial = { 'idTeam' : idTeam })
     return render(request, 'team_details.html', {'form':form, 'students':students, 'team':team})
+
+def edit_team(request, idTeam):        
+    #team = Team.objects.get(pk = idTeam)
+    team = get_object_or_404(Team, pk = idTeam)
+    if request.method == 'POST':
+        form = TeamForm(request.POST, instance =team)
+        if form.is_valid():
+            if form.has_changed():
+                form.save()
+                messages.success(request, 'Listo!')
+            else:
+                messages.error(request, 'Faltan datos')
+    form = TeamForm(instance = team)
+    return render(request, 'edit_team.html', {'form': form })

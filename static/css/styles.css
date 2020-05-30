@@ -25,3 +25,15 @@
     font-size:3rem;
     color: white;
 }
+.info{
+    color:blue;
+}
+.error{
+    color:red;
+}
+.success{
+    color:green;
+}
+.warning{
+    color: orangered;
+}

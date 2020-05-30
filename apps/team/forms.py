@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student
+from .models import Student, Team
 
 class StudentForm(forms.ModelForm):
     #Formulario para registrar alumnos
@@ -13,3 +13,8 @@ class StudentForm(forms.ModelForm):
         widgets = {
             'idTeam':forms.NumberInput(attrs={'hidden':True})
         }
+
+class TeamForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = '__all__'
