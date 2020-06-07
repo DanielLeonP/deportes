@@ -8,15 +8,24 @@
         <!-- Alumnos -->
         <div class="col-sm-12 col-md-6">
             <h4>{{ team }}</h4>
+            <h5> Cupo máx:{{ team.max_students}} </h5>
             <table class="table">
                 <tr>
                     <th>Expediente</th>
                     <th>Nombre</th>
+                    <th>Eliminar</th>
+                    <th>Liberado</th>
                 </tr>
                 {% for student in students %}
                 <tr>
-                    <th>{{ student.expediente }}</th>
-                    <th>{{ student.first_name }} {{ student.last_name }}</th>
+                    <td>{{ student.expediente }}</td>
+                    <td>{{ student.first_name }} {{ student.last_name }}</td>
+                    <td><a href="{% url 'delete_student' student.id %}" class="btn btn-danger">Eliminar</a></td>
+                    {% if student.liberado %}
+                        <td>Si</td>
+                    {% else %}
+                        <td><a href="{% url 'liberar_student' student.id %}" class="btn btn-primary">Liberar</a></td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </table>
@@ -24,16 +33,25 @@
         <div class="col-sm-12 col-md-6">
             <h4>Registra un alumno</h4>
             <form action="" method="POST">
-                {% csrf_token %}                
+                {% csrf_token %}
                 {% for field in form %}
                 <div class="form group">
                     {{ field.label_tag }}
                     {{ field|add_class:"form-control" }}
-    
+
                     {{ field.errors }}
                 </div>
-
                 {% endfor %}
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                        {{ message }}
+                        </li>
+                        {% endfor %}
+                </ul>
+                {% endif %}
                 <input type="submit" value="Aceptar" class="btn btn-outline-primary btn-block mt-2">
             </form>
         </div>

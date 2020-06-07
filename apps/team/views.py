@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
@@ -40,24 +41,29 @@ def estudiantes_equipo(request, idTeam):
     print("*************")
     return HttpResponse(estudiantes)
 
+@login_required
 def team_details(request, idTeam):
     #Vista de registro de un alumno a un taller
-    if request.method == 'POST':
-        form = StudentForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('team_details', idTeam)
-        #team = Team.objects.get(pk=idTeam)
-        team = get_object_or_404(Team, pk = idTeam)
-        students = Student.objects.filter(idTeam = idTeam)
-        return render(request, 'team_details.html', {'form':form, 'students':students, 'team':team})
-
     #team = Team.objects.get(pk=idTeam)
     team = get_object_or_404(Team, pk = idTeam)
     students = Student.objects.filter(idTeam = idTeam)
+    if request.method == 'POST':
+        form = StudentForm(request.POST)
+        total_students = Student.objects.filter(idTeam = idTeam).count()
+        if total_students < team.max_students:            
+            if form.is_valid():
+                form.save()
+                messages.success(request,'Listo!')       
+                return redirect('team_details', idTeam) 
+            return render(request, 'team_details.html', {'form':form, 'students':students, 'team':team})
+        else:
+            messages.error(request, 'Cupo lleno')
+            return render(request, 'team_details.html', {'form':form, 'students':students, 'team':team})
+    #team = Team.objects.get(pk=idTeam)
     form = StudentForm(initial = { 'idTeam' : idTeam })
     return render(request, 'team_details.html', {'form':form, 'students':students, 'team':team})
 
+@login_required
 def edit_team(request, idTeam):        
     #team = Team.objects.get(pk = idTeam)
     team = get_object_or_404(Team, pk = idTeam)
@@ -67,7 +73,35 @@ def edit_team(request, idTeam):
             if form.has_changed():
                 form.save()
                 messages.success(request, 'Listo!')
-            else:
-                messages.error(request, 'Faltan datos')
+        else:
+            messages.error(request, 'Faltan datos')
     form = TeamForm(instance = team)
     return render(request, 'edit_team.html', {'form': form })
+
+@login_required
+def delete_student(request, student_id):
+    student = get_object_or_404(Student, pk=student_id)
+    idTeam = student.idTeam.id
+    student.delete()
+    return redirect('team_details', idTeam)
+
+@login_required
+def liberar_student(request, student_id):
+    student = get_object_or_404(Student, pk=student_id)
+    student.liberado = True
+    idTeam = student.idTeam.id
+    student.save()
+    return redirect('team_details', idTeam)
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser, login_url='panel')
+def create_team(request):
+    if request.method == 'POST':
+        form = TeamForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Listo')
+        else:
+            messages.error(request, 'No se pudo registrar, revisa tus datos')
+    form = TeamForm()
+    return render(request, 'create_team.html', {'form':form})

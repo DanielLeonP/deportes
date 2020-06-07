@@ -68,7 +68,7 @@ class Student(models.Model):
         (TERCERO,'Tercero'),
     ]
     idTeam=models.ForeignKey('Team', on_delete=models.CASCADE, related_name='get_members')
-    expediente=models.IntegerField()
+    expediente=models.IntegerField(unique = True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=150)
     group = models.IntegerField()
